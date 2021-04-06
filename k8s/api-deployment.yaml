@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot
+  namespace: default
+spec:
+  selector:
+      matchLabels:                    # This deployment applies to the Pods matching the specified labels
+        app: spring-boot
+  replicas: 1
+  template:
+    metadata:
+      name: spring-boot
+      labels:
+        app: spring-boot
+    spec:
+      containers:
+      - name: spring-boot
+        env:
+          - name: MYSQL_DB_HOST
+            value: mysql:3306
+        image: sujjad/todo-app:tagVersion
+        resources:
+            requests:
+              cpu: 100m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-boot
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+  selector:
+    app: spring-boot
