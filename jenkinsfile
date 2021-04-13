@@ -7,7 +7,7 @@ pipeline{
     stages{
         stage('Fetch project from github'){
             steps{
-                git branch: 'master', url: 'https://github.com/sreelakshmi665/todo-app.git'
+                git branch: 'master', url: 'https://github.com/sreelakshmi665/todo-app-Azure-DevOps.git'
             }
                 
         }
