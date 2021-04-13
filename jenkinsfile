@@ -1,33 +1,33 @@
 pipeline{
     agent any;
      tools{
-       maven 'maven'
-       jdk 'Jdk'
+       maven 'Maven'
+       jdk 'jdk'
    }
     stages{
         stage('Fetch project from github'){
             steps{
-                git branch: 'master', url: 'https://github.com/roshenreji/todo-app-Azure-DevOps.git'
+                git branch: 'master', url: 'https://github.com/sreelakshmi665/todo-app.git'
             }
                 
         }
         stage('Maven package'){
             steps{
-                sh 'mvn -f app/pom.xml package'
+                bat 'mvn -f app/pom.xml clean package'
 
             }
         }
         stage('sonar analysis'){
             steps{
-                withSonarQubeEnv('SonarCloud'){
-                    sh 'mvn -f app/pom.xml sonar:sonar'
+                withSonarQubeEnv('sonar-server'){
+                    bat 'mvn -f app/pom.xml sonar:sonar'
                 }
             }
         }
         stage('deploy to artifactor'){
             steps{
                 rtUpload (
-            serverId: 'JfrogId',
+            serverId: 'artifactory-server',
             spec: '''{
                  "files": [
                              {
@@ -43,7 +43,7 @@ pipeline{
         stage('download artifact'){
             steps{
                  rtDownload (
-                 serverId: "JfrogId",
+                 serverId: "ARTIFACTORY-SERVER",
                 spec:"""{
                      "files": [
                                 {
@@ -61,8 +61,8 @@ pipeline{
         stage('Docker build'){
             steps{
                
-                    sh 'docker image prune -a --force'
-                    sh 'docker-compose build'
+                    bat 'docker image prune -a --force'
+                    bat 'docker-compose build'
                 
                 
             }
@@ -71,32 +71,33 @@ pipeline{
             steps{
                 
 
-                withCredentials([string(credentialsId: 'dockerpswd', variable: 'dockerHubPWD')]) {
-                            // some block
-                   sh "docker login -u roshenreji -p ${dockerHubPWD}"
+                withCredentials([string(credentialsId: 'dockerpass', variable: 'dockerpwd')]) {
+
+                        
+                   bat "docker login -u sreelakshmi14 -p ${dockerpwd}"
 
                 }
-                sh "docker tag ci-cd_app roshenreji/todo-app-new:v${env.BUILD_ID}"
-                sh "docker push roshenreji/todo-app-new:v${env.BUILD_ID}"
+                bat "docker commit todo_app sreelakshmi14/todo-app:latest"
+                bat "docker push sreelakshmi14/todo-app:latest"
 
             }
         }
         stage('deploying it to kubernetes'){
             steps{
-                sh 'chmod +x change-tag.sh'
-                sh """./change-tag.sh v${env.BUILD_ID}"""
-                sh 'cat k8s/api-deployment.yaml'
-                withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'kube-newconfig', namespace: '', serverUrl: 'https://brave-rodent-k8s-9a144257.hcp.westus2.azmk8s.io:443') {
+                //sh 'chmod +x change-tag.sh'
+                //sh """./change-tag.sh v${env.BUILD_ID}"""
+               //sh 'cat k8s/api-deployment.yaml'
+                withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'kube-azure', namespace: '', serverUrl: 'https://game-gibbon-k8s-d5bdbf53.hcp.westus2.azmk8s.io:443') {
                                 // some block
-                    sh 'kubectl apply -f k8s/database-deployment.yaml'
+                    bat 'kubectl apply -f k8s/database-deployment.yaml'
                     
                 }
                 sleep(120)
-                withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'kube-newconfig', namespace: '', serverUrl: 'https://brave-rodent-k8s-9a144257.hcp.westus2.azmk8s.io:443') {
+                withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'kube-azure', namespace: '', serverUrl: 'https://game-gibbon-k8s-d5bdbf53.hcp.westus2.azmk8s.io:443') {
                                 // some block
-                    sh 'kubectl apply -f k8s/api-deployment.yaml'
-                    sh 'kubectl get pods'
-                    sh 'kubectl get svc'
+                    bat 'kubectl apply -f k8s/api-deployment.yaml'
+                    bat 'kubectl get pods'
+                    bat 'kubectl get svc'
                     
                 }
 
