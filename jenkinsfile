@@ -76,7 +76,7 @@ pipeline{
                    sh "docker login -u roshenreji -p ${dockerHubPWD}"
 
                 }
-                sh "docker commit ci-cd_app roshenreji/todo-app-new:v${env.BUILD_ID}"
+                sh "docker tag ci-cd_app roshenreji/todo-app-new:v${env.BUILD_ID}"
                 sh "docker push roshenreji/todo-app-new:v${env.BUILD_ID}"
 
             }
