@@ -14,7 +14,7 @@ services:
  
   mysql:
    container_name: todo-mysql
-   image: mysql/mysql-server:5.7
+   image: mysql
    environment:
     MYSQL_DATABASE: tododb
     MYSQL_ROOT_PASSWORD: 143625
