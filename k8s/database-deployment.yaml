@@ -36,7 +36,7 @@ spec:
           persistentVolumeClaim:
             claimName: mysql-pvk-claim
       containers:
-        - image: sujjad/todo-mysql:v23
+        - image: roshenreji/todo-mysql:v23
           name: mysql
           env:
             - name: MYSQL_DATABASE

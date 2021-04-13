@@ -67,20 +67,20 @@ pipeline{
                 
             }
         }
-        // stage('Pushing images to docker hub'){
-        //     steps{
+        stage('Pushing images to docker hub'){
+            steps{
                 
 
-        //         withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerHubPWD')]) {
-        //                     // some block
-        //            sh "docker login -u roshenreji -p ${dockerHubPWD}"
+                withCredentials([string(credentialsId: 'f584bcd1-20ad-4372-a6d8-aaecfaf8096e', variable: 'dockerHubPWD')]) {
+                            // some block
+                   sh "docker login -u roshenreji -p ${dockerHubPWD}"
 
-        //         }
-        //         sh "docker commit cisample_app_1 roshenreji/todo-app:v${env.BUILD_ID}"
-        //         sh "docker push roshenreji/todo-app:v${env.BUILD_ID}"
+                }
+                sh "docker commit ci-cd_app roshenreji/todo-app-new:v${env.BUILD_ID}"
+                sh "docker push roshenreji/todo-app-new:v${env.BUILD_ID}"
 
-        //     }
-        // }
+            }
+        }
         // stage('deploying it to kubernetes'){
         //     steps{
         //         sh 'chmod +x change-tag.sh'
