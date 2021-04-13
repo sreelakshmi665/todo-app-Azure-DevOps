@@ -71,7 +71,7 @@ pipeline{
             steps{
                 
 
-                withCredentials([usernameColonPassword(credentialsId: 'dockerpswd', variable: 'dockerHubPWD')]) {
+                withCredentials([string(credentialsId: 'dockerpswd', variable: 'dockerHubPWD')]) {
                             // some block
                    sh "docker login -u roshenreji -p ${dockerHubPWD}"
 
