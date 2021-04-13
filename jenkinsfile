@@ -92,7 +92,7 @@ pipeline{
                     
                 }
                 sleep(120)
-                withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'kube-newconfig', namespace: '', serverUrl: 'https://brave-rodent-k8s-9a144257.hcp.westus2.azmk8s.io:443 ') {
+                withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'kube-newconfig', namespace: '', serverUrl: 'https://brave-rodent-k8s-9a144257.hcp.westus2.azmk8s.io:443') {
                                 // some block
                     sh 'kubectl apply -f k8s/api-deployment.yaml'
                     sh 'kubectl get pods'
